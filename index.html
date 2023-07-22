@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <title>Document</title>
+
+    <style>
+        .align{
+            position: absolute;
+            right: 20%;
+            top: 12%;
+        }
+
+        .header{
+            color: black;
+        }
+
+        .para{
+            color: black;
+            font-size: x-large;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="align">
+    <div class="header"><h1><u>Histogram Data Visualisation </u></h1></div>
+    <div class="para"><p>Population Housing For Urban Areas in 2001</p></div>
+    <div class="histogram"></div>
+    </div>
+
+    <script>
+        const data = [
+          { category: "Total population", value: 1028.6 },
+          { category: "Urban population", value: 286.1 },
+          { category: "Percentage share urban", value: 27.8 },
+          { category: "Pucca houses", value: 79.16 },
+          { category: "Semi-pucca houses", value: 15.58 },
+          { category: "Kutcha houses", value: 5.27 }];
+    
+   
+        const margin = { top: 30, right: 30, bottom: 50, left: 50 };
+        const width = 800 - margin.left - margin.right;
+        const height = 400 - margin.top - margin.bottom;
+    
+
+        const svg = d3.select(".histogram")
+          .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    
+ 
+        const xScale = d3.scaleBand()
+          .domain(data.map(d => d.category))
+          .range([0, width])
+          .padding(0.1);
+        const yScale = d3.scaleLinear()
+          .domain([0, d3.max(data, d => d.value)])
+          .range([height, 0]);
+    
+       
+        svg.selectAll(".bar")
+          .data(data)
+          .enter()
+          .append("rect")
+          .attr("class", "bar")
+          .attr("x", d => xScale(d.category))
+          .attr("y", d => yScale(d.value))
+          .attr("width", xScale.bandwidth())
+          .attr("height", d => height - yScale(d.value))
+          .attr("fill", "black");
+    
+        
+        svg.selectAll(".data-label")
+          .data(data)
+          .enter()
+          .append("text")
+          .attr("class", "data-label")
+          .attr("x", d => xScale(d.category) + xScale.bandwidth() / 2)
+          .attr("y", d => yScale(d.value) - 10)
+          .attr("text-anchor", "middle")
+          .text(d => d.value);
+    
+       
+        svg.append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(xScale));
+         svg.append("g")
+          .call(d3.axisLeft(yScale));
+    
+      </script>
+</body>
+</html>
